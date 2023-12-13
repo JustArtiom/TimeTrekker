@@ -1,0 +1,40 @@
+.dataInput {
+    position: relative;
+}
+
+.dataInput input {
+    color: var(--color-text-white);
+    background: var(--color-surface);
+    padding: 0.8rem;
+    border: 2px solid var(--color-border);
+    border-radius: 10px;
+    font-size: 15px;
+}
+
+.dataInput label {
+    position: absolute;
+    top: 0;
+    left: 0;
+    translate: 0.625rem 0.625rem;
+    color: var(--color-text-secondary);
+    background-color: var(--color-surface);
+    padding: 0.5px 5px;
+    border: 2px solid transparent;
+    pointer-events: none;
+    font-size: 15px;
+    transition: translate 250ms, background-color 250ms, border-color 50ms;
+}
+
+.dataInput input:focus {
+    outline: 2px solid var(--color-text-primary);
+}
+
+.dataInput:focus-within label,
+.dataInput:not(:has(:placeholder-shown)) label {
+    translate: 0.625rem -1rem;
+    border-color: var(--color-border);
+}
+
+.dataInput ::placeholder {
+    color: transparent;
+}

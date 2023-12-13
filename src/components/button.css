@@ -1,0 +1,14 @@
+.default_button {
+    padding: 10px;
+    border-radius: 10px;
+    font-weight: 600;
+}
+
+.default_button:hover {
+    cursor: pointer;
+}
+
+.Primary_BTN {
+    background-color: var(--color-text-primary);
+    color: var(--color-text-white);
+}
