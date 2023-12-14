@@ -19,6 +19,8 @@ module.exports = {
             },
         });
 
+        win.setAlwaysOnTop(true, "screen-saver");
+
         win.loadURL(MAIN_WINDOW_WEBPACK_ENTRY);
         win.on("ready-to-show", () => {
             logs.set(Date.now().toString(), {

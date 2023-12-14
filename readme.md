@@ -18,6 +18,7 @@ New improved version comming soon. It will contain:
 1. More optimised code
 1. More handlers for easy understanding and development
 1. Bug fixes _(hopefully)_
+1. Encrypted passwords
 
 # Currently known bugs:
 

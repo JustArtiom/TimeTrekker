@@ -1,7 +1,5 @@
-const { app, powerMonitor } = require("electron");
+const { app } = require("electron");
 const createWindow = require("./utils/createWindow");
-const { logs } = require("./utils/db");
-require("./utils/ipc");
 
 if (require("electron-squirrel-startup")) {
     app.quit();
@@ -12,6 +10,8 @@ app.setLoginItemSettings({
 });
 
 app.on("ready", () => {
+    const { logs } = require("./utils/db");
+    require("./utils/ipc");
     createWindow.main();
     logs.set(Date.now().toString(), {
         user: "System",
@@ -20,6 +20,7 @@ app.on("ready", () => {
 });
 
 app.on("before-quit", () => {
+    const { logs } = require("./utils/db");
     logs.set(Date.now().toString(), {
         user: "System",
         data: "Exiting, process stopped...",
