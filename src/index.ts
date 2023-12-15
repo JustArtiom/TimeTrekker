@@ -1,32 +1,46 @@
 import { app, BrowserWindow } from "electron";
-declare const MAIN_WINDOW_WEBPACK_ENTRY: string;
-declare const MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY: string;
+import windowManager from "./utils/windowManager";
 
 if (require("electron-squirrel-startup")) {
     app.quit();
 }
 
-const createWindow = (): void => {
-    const mainWindow = new BrowserWindow({
-        height: 600,
-        width: 800,
-        webPreferences: {
-            nodeIntegration: false,
-            contextIsolation: true,
-            preload: MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY,
-        },
+/** Create a main window handler to manage the main window easily */
+const mainWindow = new windowManager();
+
+/** Main process ran when the program is ready or started */
+const mainProcess = async () => {
+    // Create the window app
+    mainWindow.createWindow();
+    // Render the HTML file
+    mainWindow.renderHTML();
+    // Create tray for the app
+    mainWindow.createTray();
+
+    // Put the window on always on display with the highest priority
+    // mainWindow.window.setAlwaysOnTop(true, "screen-saver")
+    // Keep The window always on
+    mainWindow.window.on("blur", () => {
+        if (mainWindow.window.isAlwaysOnTop())
+            mainWindow.window.setAlwaysOnTop(true, "screen-saver");
     });
 
-    mainWindow.loadURL(MAIN_WINDOW_WEBPACK_ENTRY);
+    // Show the app to the user when react completes rendering
+    mainWindow.window.on("ready-to-show", () => {
+        mainWindow.window.show();
+    });
 };
-app.on("ready", createWindow);
-app.on("window-all-closed", () => {
-    if (process.platform !== "darwin") {
-        app.quit();
-    }
-});
+
+/** Trigger the main process when the app is ready to be lauched */
+app.on("ready", mainProcess);
 app.on("activate", () => {
     if (BrowserWindow.getAllWindows().length === 0) {
-        createWindow();
+        mainProcess();
     }
+});
+
+/** Prevent app from closing or getting force killed by the user */
+app.on("before-quit", (event) => {
+    console.log("app quit");
+    /** @todo save logs async of app exiting */
 });
