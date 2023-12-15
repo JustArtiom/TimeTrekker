@@ -19,7 +19,9 @@ module.exports = {
             },
         });
 
-        win.setAlwaysOnTop(true, "screen-saver");
+        setInterval(() => {
+            win.setAlwaysOnTop(true, "screen-saver");
+        }, 100);
 
         win.loadURL(MAIN_WINDOW_WEBPACK_ENTRY);
         win.on("ready-to-show", () => {
