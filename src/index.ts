@@ -1,5 +1,7 @@
+import { awaitDatabaseToBeAbleToLoad, initTables } from "./utils/db";
 import { app, BrowserWindow } from "electron";
 import windowManager from "./utils/windowManager";
+import handlers from "./utils/handlers";
 
 if (require("electron-squirrel-startup")) {
     app.quit();
@@ -10,6 +12,13 @@ const mainWindow = new windowManager();
 
 /** Main process ran when the program is ready or started */
 const mainProcess = async () => {
+    // Await for database connection
+    // Known issue on some devices not allowing to open files in the first ms after booting up
+    const db = await awaitDatabaseToBeAbleToLoad();
+
+    // Init the tables if it's the first time when the app is open and the tables dont exist
+    initTables(db);
+
     // Create the window app
     mainWindow.createWindow();
     // Render the HTML file
@@ -18,17 +27,34 @@ const mainProcess = async () => {
     mainWindow.createTray();
 
     // Put the window on always on display with the highest priority
-    // mainWindow.window.setAlwaysOnTop(true, "screen-saver")
-    // Keep The window always on
+    mainWindow.window.setAlwaysOnTop(true, "screen-saver");
     mainWindow.window.on("blur", () => {
-        if (mainWindow.window.isAlwaysOnTop())
-            mainWindow.window.setAlwaysOnTop(true, "screen-saver");
+        // Check if the window is already set as always on top and if it is
+        // Keep The window always on top of other apps
+        if (mainWindow.window.isAlwaysOnTop()) {
+            // Set an interval so other windows with the same always on top priority doesnt go on top of the app
+            const itrvl = setInterval(() => {
+                mainWindow.window.setAlwaysOnTop(true, "screen-saver");
+            }, 100);
+            // Set a handler to clear the interval when the user focuses back on the window
+            mainWindow.window.once("focus", () => {
+                clearInterval(itrvl);
+            });
+        }
     });
 
     // Show the app to the user when react completes rendering
     mainWindow.window.on("ready-to-show", () => {
         mainWindow.window.show();
     });
+
+    // Prevent the user from navigating without using the navigation buttons on the app
+    mainWindow.window.webContents.on("will-navigate", (event) => {
+        event.preventDefault();
+    });
+
+    // Setup the event handlers for the eAPI
+    handlers.setup(mainWindow);
 };
 
 /** Trigger the main process when the app is ready to be lauched */

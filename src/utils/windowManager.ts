@@ -10,7 +10,7 @@ export default class windowManager {
         icon: this.native_icon,
         width: 700,
         height: 400,
-        frame: false,
+        // frame: false,
         show: false, // Turns true when React done rendering
         webPreferences: {
             preload: MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY,
@@ -23,7 +23,6 @@ export default class windowManager {
     /** Create main window */
     createWindow = (options?: Electron.BrowserWindowConstructorOptions) => {
         this.window = new BrowserWindow(options || this.defaultWindowOptions);
-
         return this.window;
     };
 
@@ -31,14 +30,12 @@ export default class windowManager {
     renderHTML = (dir?: string) => {
         if (!this.window) throw new Error("No window openned yet");
         this.window.loadURL(dir || MAIN_WINDOW_WEBPACK_ENTRY);
-
         return;
     };
 
     /** Create tray */
     createTray = () => {
         this.tray = new Tray(this.native_icon);
-
         return this.tray;
     };
 }

@@ -1,0 +1,31 @@
+.headerContainer {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+}
+
+.headerTitle {
+    padding: 20px 50px;
+    color: var(--color-text-primary);
+    font-size: large;
+    font-weight: 700;
+}
+
+.NavIcons {
+    display: flex;
+    flex-grow: 1;
+    justify-content: flex-end;
+}
+
+.NavIcons p {
+    padding: 20px 20px;
+    color: var(--color-text-primary);
+    font-size: large;
+}
+
+.headerTitle:hover,
+.NavIcons p:hover {
+    cursor: pointer;
+    background-color: var(--color-bg-hover);
+    color: var(--color-text-primary-hover);
+}
